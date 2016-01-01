@@ -1,0 +1,5 @@
+Custom: you can change 'plugin_path' - path to your 'plugins' folder
+
+def init(app):
+    Request: app of Flask
+    Return: load all plugins

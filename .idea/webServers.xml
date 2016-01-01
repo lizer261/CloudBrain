@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b59666c9-4c86-41ee-ae0e-2b3741185177" name="full" url="http://full.cf">
+        <fileTransfer host="full.cf" port="22" accessType="SFTP" password="df9bdf99df9adf9fdf9cdf9fdf9ddf9d" username="root">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
