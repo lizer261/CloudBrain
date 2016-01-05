@@ -20,7 +20,7 @@ csrf = CsrfProtect()
 app = Flask(__name__)
 
 # You can enable or disable debug mode
-app.debug=True
+app.debug = True
 
 # Your secret for app, it's needed for CSFR
 app.secret_key = 'Cool12391kmkmkfswlewf,wemfmwelm' \

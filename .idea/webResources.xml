@@ -13,6 +13,7 @@
             <path value="file://$PROJECT_DIR$/plugins/cloudbrain_cabinet" />
             <path value="file://$PROJECT_DIR$/plugins/aboutme" />
             <path value="file://$PROJECT_DIR$/plugins/user_manager" />
+            <path value="file://$PROJECT_DIR$/plugins/cloudbrain_noteeditor" />
           </resourceRoots>
         </entryData>
       </entry>

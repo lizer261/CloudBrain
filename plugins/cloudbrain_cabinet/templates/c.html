@@ -64,16 +64,24 @@
     </style>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <script>
+        var a = 0;
         function send_data() {
-            var frame = $('iframe').contents();
-            var frame1 = frame.find('iframe').contents();
-            $.post("new_note", {text: frame1.find('body').html(), theme: frame.find('#theme').val()});
-            location.reload();
+            if (a == 0) {
+                var frame = $('iframe').contents();
+                var frame1 = frame.find('iframe').contents();
+                console.log(frame1.find('body').html());
+                $.post("new_note", {text: frame1.find('body').html(), theme: frame.find('#theme').val()});
+                location.reload();
+            }
+            else {
+                $('iframe').attr('src', '/cloud/note_editor');
+                a = 0;
+            }
         }
-        $(document).ready(function () {
-            var frame = $('iframe').contents();
-            frame.find('#theme').focus();
-        });
+        function get_all_notes() {
+            $('iframe').attr('src', '/all_notes');
+            a = 1;
+        }
     </script>
 </head>
 <body>
@@ -82,7 +90,7 @@
         <img src="/cloud/img/head.png">
     </div>
 
-    <div class="icons">
+    <div class="icons" onclick="get_all_notes()">
         <i class="fa fa-sticky-note-o fa-3x"></i>
     </div>
 
@@ -97,7 +105,7 @@
 </div>
 
 <div class="editor">
-    <iframe src="/cloud/note_editor.html"></iframe>
+    <iframe src="/cloud/note_editor"></iframe>
 </div>
 </body>
 </html>

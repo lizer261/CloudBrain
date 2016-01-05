@@ -14,6 +14,7 @@
         <option value="$MODULE_DIR$/plugins/aboutme/templates" />
         <option value="$MODULE_DIR$/plugins/cloudbrain_cabinet/templates" />
         <option value="$MODULE_DIR$/plugins/cloudbrain_front/templates" />
+        <option value="$MODULE_DIR$/plugins/cloudbrain_noteeditor/templates" />
       </list>
     </option>
   </component>

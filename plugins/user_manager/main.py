@@ -6,6 +6,9 @@ from plugins.forms.main import login_form
 from plugins.database.main import register_user
 
 
+# Import flask login
+
+
 def init(app):
     # Card of project
     @app.route('/cloud/register', methods=('GET', 'POST'))

@@ -13,7 +13,7 @@ def init(app):
     @app.route('/')
     def redirect_to_index():
         # To '/card/index.html'
-        return redirect('/about_me/')
+        return redirect('/cloud/')
 
     # Return static files
 
