@@ -81,11 +81,10 @@ def get_theme_depending(secondary_theme):
     # Return main theme
     try:
         # Return theme
-        return main_theme[0].main_theme
+        return main_theme
     # If no depending, return nothing!
     except IndexError:
         return ''
-
 
 # Get text of user
 def get_text_by_theme(user, theme):
@@ -98,3 +97,14 @@ def get_text_by_theme(user, theme):
     database_texts.close()
     # Return text
     return text_of_user
+
+
+#
+def remove_depending(main_theme, second_theme):
+    " Remove theme depending "
+    # Connect database
+    database_texts.connect()
+    q = Depending.delete().where(Depending.second_theme == second_theme, Depending.main_theme == main_theme)
+    q.execute()  # remove the rows
+    # Close connection
+    database_texts.close()

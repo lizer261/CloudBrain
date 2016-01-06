@@ -13,7 +13,7 @@
 </head>
 <body>
 {% for i in range(0,notes|length) %}
-    <a href="/c/{{ notes[i] }}">{{ notes[i] }}</a>
+    <a href="/c/{{ notes[i].replace('|','') }}">{{ tabs[i]|safe }}{{ notes[i].replace('|','') }}</a>
     <button onclick="add_depend('{{ notes[i-1] }}', '{{ notes[i] }}')"> ==></button><br>
 {% endfor %}
 </body>
