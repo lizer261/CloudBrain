@@ -21,7 +21,7 @@ def init(app):
     # All notes
     @app.route('/all_notes')
     def all_notes():
-        global was, num
+        global was, num, dep
         was = []
         num = 0
         keys = []
@@ -56,27 +56,22 @@ def init(app):
                 return ''
 
         def tree(mass, start):
-            global was, num
+            global was, num, dep
             if start not in was:
                 was.append(start)
-                if start != '!':
-                    if pre(mass, start) == '':
-                        tab = '&nbsp;&nbsp;&nbsp;'
-                        if start != '%':
-                            keys.append(start)
-                            tabs.append(tab * num)
-                    else:
-                        tab = '&nbsp;&nbsp;&nbsp;'
-                        if start != '%':
-                            keys.append(start)
-                            tabs.append(tab * num)
+                if start != '%':
+                    keys.append(start)
+                    tabs.append(num)
+                else:
+                    num -= 1
+
             if next(mass, start) != []:
                 num += 1
                 for i in next(mass, start):
                     if i != '':
                         tree(mass, i)
                     else:
-                        num -= 1
+                        num -= num
             else:
                 num -= 1
         # For every note in notes we add theme and depend
@@ -92,6 +87,7 @@ def init(app):
             if pre(themes, note.theme) == '':
                 themes.append('%')
                 depends.append(note.theme)
+
         tree(themes, '%')
         return render_template('all_notes.html',
                                notes=keys, tabs=tabs)
@@ -108,4 +104,9 @@ def init(app):
     @app.route('/depend', methods=['POST'])
     def depend():
         add_depending(request.form['main_theme'], request.form['second_theme'])
+        return ''
+
+    @app.route('/rem_depend', methods=['POST'])
+    def rem_depend():
+        remove_depending(request.form['main_theme'], request.form['second_theme'])
         return ''

@@ -9,12 +9,67 @@
             $.post('depend', {main_theme: glav_theme, second_theme: secondary_theme});
             location.reload();
         }
+        function rem_depend(glav_theme, secondary_theme) {
+            $.post('rem_depend', {main_theme: glav_theme, second_theme: secondary_theme});
+            location.reload();
+        }
+        $(document).ready(function () {
+            $('*[id*=item]:visible').each(function () {
+                $(this).css('margin-left', 15 * $(this).attr('level') + 'px');
+                if ($(this).attr('level') > 100) {
+                    $(this).css('display', 'none');
+                }
+
+            });
+            $(".items").sortable({
+                connectWith: ".items"
+            }).disableSelection();
+        });
     </script>
+    <style>
+        .spisok {
+            float: left;
+            text-align: center;
+            background: rgba(76, 73, 77, 0.12);
+            margin: 15px;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+
+        h1 {
+            font-size: 17px;
+            width: 200px;
+        }
+
+        li {
+            list-style-type: none;
+            margin: 5px;
+            cursor: pointer;
+            background: white;
+            padding-top: 7px;
+            padding-bottom: 7px;
+            padding-right: 40px;
+            padding-left: 40px;
+        }
+
+        .items {
+            padding-right: 30px;
+            padding-left: 30px;
+            padding-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 {% for i in range(0,notes|length) %}
-    <a href="/c/{{ notes[i].replace('|','') }}">{{ tabs[i]|safe }}{{ notes[i].replace('|','') }}</a>
-    <button onclick="add_depend('{{ notes[i-1] }}', '{{ notes[i] }}')"> ==></button><br>
+    <div class="spisok">
+        <h1>{{ notes[i] }}</h1>
+        <ul class="items">
+        </ul>
+    </div>
+    {#    <div id="item" level="{{ tabs[i]|safe }}">#}
+    {#        <a href="/c/{{ notes[i].replace('|','') }}">{{ notes[i].replace('|','') }}</a>#}
+    {#    </div>#}
 {% endfor %}
 </body>
 </html>
