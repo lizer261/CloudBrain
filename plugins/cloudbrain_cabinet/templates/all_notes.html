@@ -7,69 +7,85 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 </head>
 <body>
-    <style>
-        li {
-            padding-top: 10px;
-            padding-bottom: 10px;
-            padding-left: 10px;
-            padding-right: 10px;
-            list-style-type: none;
-            cursor: pointer;
-        }
-        .pre{
-            background: red;
-        }
-    </style>
-    <script>
-        $(document).ready(init);
-        function init() {
-            $("li").each(function (index) {
-                $(this).css('margin-left', 20 * $(this).attr('level'));
-            });
-            $( 'ul' ).sortable({
-                placeholder: ".pre",
-                stop: function(event, ui) {
-                    var li = $('li').get(ui.item.index()-1);
-                    $($('li').get(ui.item.index())).css('margin-left', 20 * parseInt($(li).attr('level')));
-                    $($('li').get(ui.item.index())).attr('level', parseInt($(li).attr('level')));
-                    get_element(ui.item.index(), -1);
-                    console.log($($('li').get(id)).html());
-                }
-            })
-            .disableSelection();
-            $('li').dblclick(function(event){
-                if
-                (parseInt($($('li').get($(event.target).index()-1)).attr('level'))+1 > $(event.target).attr('level'))
-            {
+<style>
+    li {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        list-style-type: none;
+        cursor: pointer;
+    }
+
+    .pre {
+        background: red;
+    }
+</style>
+<script>
+    var id;
+    function add_depending(main_theme, second_theme) {
+        $.post('/depend', {
+            main_theme: main_theme,
+            second_theme: second_theme
+        })
+    }
+    function rem_depending(main_theme, second_theme) {
+        $.post('/rem_depend', {
+            main_theme: main_theme,
+            second_theme: second_theme
+        })
+    }
+    $(document).ready(init);
+    function init() {
+        $("li").each(function (index) {
+            $(this).css('margin-left', 20 * $(this).attr('level'));
+        });
+        $('ul').sortable({
+                    placeholder: ".pre",
+                    start: function (event, ui) {
+                        var li = $('li').get(ui.item.index() - 1);
+                        console.log($(li).html());
+                    },
+                    stop: function (event, ui) {
+                        var li = $('li').get(ui.item.index() - 1);
+                        $($('li').get(ui.item.index())).css('margin-left', 20 * parseInt($(li).attr('level')));
+                        $($('li').get(ui.item.index())).attr('level', parseInt($(li).attr('level')));
+                        get_element(ui.item.index(), -1);
+                        console.log($($('li').get(id)).html());
+                    }
+                })
+                .disableSelection();
+        $('li').dblclick(function (event) {
+            if
+            (parseInt($($('li').get($(event.target).index() - 1)).attr('level')) + 1 > $(event.target).attr('level')) {
                 $(event.target).attr('level', parseInt($(event.target).attr('level')) + 1);
                 $(event.target).css('margin-left', parseInt($(event.target).attr('level')) * 20);
                 get_element($(event.target).index(), -1);
                 console.log($($('li').get(id)).html());
             }
-            });
-        }
-        function add_level(a){
-            $(a).css('margin-left',($(a).attr('level')+1)*20)
-        }
-        var id;
-        function get_element(index, index_second){
-            if (index_second != -1) {
-                if (parseInt($($('li').get(index_second)).attr('level')) >= parseInt($($('li').get(index)).attr('level'))){
-                    get_element(index, index_second-1);
-                }
-                else {
-                    id = index_second;
-                }
+        });
+    }
+    function add_level(a) {
+        $(a).css('margin-left', ($(a).attr('level') + 1) * 20)
+    }
+    function get_element(index, index_second) {
+        if (index_second != -1) {
+            if (parseInt($($('li').get(index_second)).attr('level')) >= parseInt($($('li').get(index)).attr('level')) && parseInt($($('li').get(index)).attr('level')) != 0) {
+                get_element(index, index_second - 1);
             }
-            else{
-                get_element(index, index-1);
+            else {
+                id = index_second;
             }
         }
-    </script>
-    <ul>
-        {% for i in range(0,notes|length) %}
-            <li level="{{ tabs[i] }}">{{ notes[i] }}</li>
-        {% endfor %}
-    </ul>
+        else {
+            get_element(index, index - 1);
+        }
+    }
+</script>
+<ul>
+    {% for i in range(0,notes|length) %}
+        <li level="{{ tabs[i] }}">{{ notes[i] }}</li>
+    {% endfor %}
+</ul>
 </body>
 </html>

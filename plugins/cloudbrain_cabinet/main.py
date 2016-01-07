@@ -21,7 +21,7 @@ def init(app):
     # All notes
     @app.route('/all_notes')
     def all_notes():
-        global was, num, dep
+        global was, num, dep, themes, depends
         was = []
         num = 0
         keys = []
