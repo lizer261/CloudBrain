@@ -87,7 +87,6 @@ def init(app):
             if pre(themes, note.theme) == '':
                 themes.append('%')
                 depends.append(note.theme)
-
         tree(themes, '%')
         return render_template('all_notes.html',
                                notes=keys, tabs=tabs)

@@ -2,74 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CloudBrain - All notes</title>
-    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script>
-        function add_depend(glav_theme, secondary_theme) {
-            $.post('depend', {main_theme: glav_theme, second_theme: secondary_theme});
-            location.reload();
-        }
-        function rem_depend(glav_theme, secondary_theme) {
-            $.post('rem_depend', {main_theme: glav_theme, second_theme: secondary_theme});
-            location.reload();
-        }
-        $(document).ready(function () {
-            $('*[id*=item]:visible').each(function () {
-                $(this).css('margin-left', 15 * $(this).attr('level') + 'px');
-                if ($(this).attr('level') > 100) {
-                    $(this).css('display', 'none');
-                }
-
-            });
-            $(".items").sortable({
-                connectWith: ".items"
-            }).disableSelection();
-        });
-    </script>
-    <style>
-        .spisok {
-            float: left;
-            text-align: center;
-            background: rgba(76, 73, 77, 0.12);
-            margin: 15px;
-            padding: 5px;
-            border: 1px solid black;
-            border-radius: 5px;
-        }
-
-        h1 {
-            font-size: 17px;
-            width: 200px;
-        }
-
-        li {
-            list-style-type: none;
-            margin: 5px;
-            cursor: pointer;
-            background: white;
-            padding-top: 7px;
-            padding-bottom: 7px;
-            padding-right: 40px;
-            padding-left: 40px;
-        }
-
-        .items {
-            padding-right: 30px;
-            padding-left: 30px;
-            padding-bottom: 5px;
-        }
-    </style>
+    <title></title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 </head>
 <body>
-{% for i in range(0,notes|length) %}
-    <div class="spisok">
-        <h1>{{ notes[i] }}</h1>
-        <ul class="items">
-        </ul>
-    </div>
-    {#    <div id="item" level="{{ tabs[i]|safe }}">#}
-    {#        <a href="/c/{{ notes[i].replace('|','') }}">{{ notes[i].replace('|','') }}</a>#}
-    {#    </div>#}
-{% endfor %}
+    <style>
+        li {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            list-style-type: none;
+            cursor: pointer;
+        }
+        .pre{
+            background: red;
+        }
+    </style>
+    <script>
+        $(document).ready(init);
+        function init() {
+            $("li").each(function (index) {
+                $(this).css('margin-left', 20 * $(this).attr('level'));
+            });
+            $( 'ul' ).sortable({
+                placeholder: ".pre",
+                stop: function(event, ui) {
+                    var li = $('li').get(ui.item.index()-1);
+                    $($('li').get(ui.item.index())).css('margin-left', 20 * parseInt($(li).attr('level')));
+                    $($('li').get(ui.item.index())).attr('level', parseInt($(li).attr('level')));
+                    get_element(ui.item.index(), -1);
+                    console.log($($('li').get(id)).html());
+                }
+            })
+            .disableSelection();
+            $('li').dblclick(function(event){
+                if
+                (parseInt($($('li').get($(event.target).index()-1)).attr('level'))+1 > $(event.target).attr('level'))
+            {
+                $(event.target).attr('level', parseInt($(event.target).attr('level')) + 1);
+                $(event.target).css('margin-left', parseInt($(event.target).attr('level')) * 20);
+                get_element($(event.target).index(), -1);
+                console.log($($('li').get(id)).html());
+            }
+            });
+        }
+        function add_level(a){
+            $(a).css('margin-left',($(a).attr('level')+1)*20)
+        }
+        var id;
+        function get_element(index, index_second){
+            if (index_second != -1) {
+                if (parseInt($($('li').get(index_second)).attr('level')) >= parseInt($($('li').get(index)).attr('level'))){
+                    get_element(index, index_second-1);
+                }
+                else {
+                    id = index_second;
+                }
+            }
+            else{
+                get_element(index, index-1);
+            }
+        }
+    </script>
+    <ul>
+        {% for i in range(0,notes|length) %}
+            <li level="{{ tabs[i] }}">{{ notes[i] }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
