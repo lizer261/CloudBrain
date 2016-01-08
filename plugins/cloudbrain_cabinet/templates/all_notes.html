@@ -11,15 +11,17 @@
     li {
         padding-top: 10px;
         padding-bottom: 10px;
-        padding-left: 10px;
         padding-right: 10px;
         list-style-type: none;
         cursor: pointer;
     }
-
+    li .ui-sortable-handle :hover{
+        background: rgba(0, 0, 255, 0.22) !important;
+    }
     .pre {
         background: red;
     }
+
 </style>
 <script>
     var id;
@@ -44,14 +46,21 @@
                     placeholder: ".pre",
                     start: function (event, ui) {
                         var li = $('li').get(ui.item.index() - 1);
-                        console.log($(li).html());
+                        if ($(li).attr('level') != '0') {
+                            rem_depending($(li).html(), $($('li').get(ui.item.index())).html());
+                        }
+                        else if ($($('li').get(ui.item.index())).attr('level') == '1'){
+                            rem_depending($(li).html(), $($('li').get(ui.item.index())).html());
+                        }
                     },
                     stop: function (event, ui) {
-                        var li = $('li').get(ui.item.index() - 1);
-                        $($('li').get(ui.item.index())).css('margin-left', 20 * parseInt($(li).attr('level')));
-                        $($('li').get(ui.item.index())).attr('level', parseInt($(li).attr('level')));
-                        get_element(ui.item.index(), -1);
-                        console.log($($('li').get(id)).html());
+                        if (parseInt($(li).attr('level')) != $($('li').get(ui.item.index())).attr('level')){
+                            var li = $('li').get(ui.item.index() - 1);
+                            $($('li').get(ui.item.index())).css('margin-left', 20 * parseInt($(li).attr('level')));
+                            $($('li').get(ui.item.index())).attr('level', parseInt($(li).attr('level')));
+                            get_element(ui.item.index(), -1);
+                            add_depending($($('li').get(ui.item.index())).html(),$($('li').get(id)).html());
+                        }
                     }
                 })
                 .disableSelection();
@@ -61,7 +70,8 @@
                 $(event.target).attr('level', parseInt($(event.target).attr('level')) + 1);
                 $(event.target).css('margin-left', parseInt($(event.target).attr('level')) * 20);
                 get_element($(event.target).index(), -1);
-                console.log($($('li').get(id)).html());
+                rem_depending($(event.target).html(),$($('li').get($(event.target).index() - 1)).html());
+                add_depending($($('li').get(id)).html(), $(event.target).html());
             }
         });
     }
@@ -82,9 +92,9 @@
         }
     }
 </script>
-<ul>
+<ul id="u">
     {% for i in range(0,notes|length) %}
-        <li level="{{ tabs[i] }}">{{ notes[i] }}</li>
+        <li class="it" level="{{ tabs[i] }}">{{ notes[i] }}</li>
     {% endfor %}
 </ul>
 </body>

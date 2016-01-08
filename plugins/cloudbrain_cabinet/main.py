@@ -13,6 +13,7 @@ def generate_header():
 
 # Init
 def init(app):
+    global was, num, dep, themes, depends
     # Main page
     @app.route('/c')
     def cabinet():
@@ -98,14 +99,15 @@ def init(app):
 
     @app.route('/c/<theme>')
     def get_theme(theme):
-        return get_text_by_theme('Andrew', theme)[0].text
+        # return get_text_by_theme('Andrew', theme)[0].text
+        return render_template('edit_note.html', text=get_text_by_theme('Andrew', theme)[0].text, theme=theme)
 
     @app.route('/depend', methods=['POST'])
     def depend():
-        add_depending(request.form['main_theme'], request.form['second_theme'])
+        add_depending(request.form['second_theme'], request.form['main_theme'])
         return ''
 
     @app.route('/rem_depend', methods=['POST'])
     def rem_depend():
-        remove_depending(request.form['main_theme'], request.form['second_theme'])
+        remove_depending(request.form['second_theme'],request.form['main_theme'])
         return ''

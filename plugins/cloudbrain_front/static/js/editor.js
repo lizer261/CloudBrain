@@ -15,5 +15,5 @@ $(function () {
 $(document).ready(function () {
     var frame = $('iframe').contents();
     //add custom field theme in
-    $('.sceditor-toolbar').append('<br><input id="theme" name="theme" placeholder="Название темы" type=text><br>');
+    $('.sceditor-toolbar').append('<br><input id="theme" name="theme" placeholder="Название темы" type=text><br><br><hr>');
 });
