@@ -57,8 +57,6 @@ class Pinboard(Model):
     content = CharField()
     # Column field
     column = IntegerField()
-    # id field
-    id = IntegerField()
     # Position field
     position = IntegerField()
     
