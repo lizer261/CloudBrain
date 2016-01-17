@@ -114,133 +114,90 @@ def remove_depending(main_theme, second_theme):
     database_texts.close()
 
 # Add Pinboard element
-def add_pinboard_element(user, type, content, column, id, position):
+def add_pinboard_element(user, type, content, cursor):
     # Connect database
     database_pinboard.connect()
-    # Add pinboard element
-    Pinboard.create(user=user, type=type, content=content, column=column, id=id, position=position).save()
     # Change positioning of other elements
-    elements = Pinboard.select().where(Pinboard.user == user, Pinboard.column == column, Pinboard.position > position)
+    elements = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position >= cursor.position)
     for element in elements:
         element.position+=1
         element.save()
+    # Add pinboard element
+    Pinboard.create(user=user, type=type, content=content, column=cursor.column, id=cursor.id, position=cursor.position).save()
     # Close connection
     database_pinboard.close()
  
 # Get Pinboard element
-def get_pinboard_element(user, type, content, column, id, position):
+def get_pinboard_element(user, cursor):
     # Connect database
     database_pinboard.connect() 
     # Select the element
-    pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.type == type, Pinboard.content == content, Pinboard.column == column, Pinboard.id == id, Pinboard.position == position)
+    if cursor.position and cursor.id:
+        pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position, Pinboard.id == cursor.id)
+    # Or select the whole column
+    else:
+        pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column)
     # Close connection
     database_pinboard.close()
     # Return element
     return pinboard_element
 
-# Change Pinboard element content
-def change_pinboard_element_content(pinboard_element, type, content):
+# Change Pinboard element 
+def change_pinboard_element(pinboard_element, final_position=None, final_column=None, type=None, content=None):
     # Connect database
     database_pinboard.connect()
-    # Change the type
-    pinboard_element.type = type
+    
     # Change the content
-    pinboard_element.content = content
-    # Save changes
-    pinboard_element.save()
-    # Close connection
-    database_pinboard.close()
+    if content and type:
+        pinboard_element.type = type
+        pinboard_element.content = content
     
-# Change Pinboard element column
-def change_pinboard_element_column(pinboard_element, final_column):
-    # Connect database
-    database_pinboard.connect()
-    # Change the column
-    pinboard_element.column = final_column
-    # Save changes
-    pinboard_element.save()
-    # Close connection
-    database_pinboard.close()
-
-# Change Pinboard element id
-def change_pinboard_element_column(pinboard_element, id):
-    # Connect database
-    database_pinboard.connect()
     # Change the id
-    pinboard_element.id = id
-    # Save changes
-    pinboard_element.save()
-    # Close connection
-    database_pinboard.close()
+    if id:
+        pinboard_element.id = id
     
-# Change Pinboard element position
-def change_pinboard_element_position(pinboard_element, final_position):
-    # Connect database
-    database_pinboard.connect()
+    # Change the column
+    if final_column:
+        pinboard_element.column = final_column
+        
     # Change the position
-    current_position = pinboard_element.position
-    
-    if current_position - final_position > 0:
-        elements = Pinboard.select().where(Pinboard.user == pinboard_element.user, Pinboard.column == pinboard_element.column, Pinboard.position >= final_position)
-        for element in elements:
-            element.position+=1
-            element.save()
-    elif current_position - final_position < 0:
-        elements = Pinboard.select().where(Pinboard.user == pinboard_element.user, Pinboard.column == pinboard_element.column, Pinboard.position <= final_position, Pinboard.position > current_position)
-        for element in elements:
-            element.position-=1
-    
-    pinboard_element.position = final_position
-    pinboard_element.save()
+    if final_position:
+        current_position = pinboard_element.position
+        
+        if current_position - final_position > 0:
+            elements = Pinboard.select().where(Pinboard.user == pinboard_element.user, Pinboard.column == pinboard_element.column, Pinboard.position >= final_position)
+            for element in elements:
+                element.position+=1
+                element.save()
+        elif current_position - final_position < 0:
+            elements = Pinboard.select().where(Pinboard.user == pinboard_element.user, Pinboard.column == pinboard_element.column, Pinboard.position <= final_position, Pinboard.position > current_position)
+            for element in elements:
+                element.position-=1
+        
+        pinboard_element.position = final_position
+
     # Save changes
     pinboard_element.save()
     # Close connection
     database_pinboard.close()
 
-# Remove Pinboard elements by type and content
-def remove_pinboard_element_by_content(user, type, content, column, id, position):
+# Remove Pinboard elements
+def remove_pinboard_element(user, cursor):
     # Connect database
     database_pinboard.connect()
-    #Select elements
-    elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == column,Pinboard.type == type, Pinboard.content == content)
+    # Select the element
+    if cursor.id and cursor.position:
+        elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position, Pinboard.id == cursor.id)
+    # Or select the whole column
+    else:
+        elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == cursor.column)
     # Remove elements
     elements.execute() 
     # Change postitioning
-    elements = Pinboard.select().where(Pinboard.column == column and Pinboard.position > position)
+    elements = Pinboard.select().where(Pinboard.column == cursor.column and Pinboard.position > cursor.position)
     for element in elements:
         element.position-=1
         element.save()
     # Close connection
     database_pinboard.close()   
-    
-# Remove Pinboard elements by column
-def remove_pinboard_element_by_column(user, column, position):
-    # Connect database
-    database_pinboard.connect()
-    #Select elements
-    elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == column)
-    # Remove elements
-    elements.execute() 
-    # Change postitioning
-    elements = Pinboard.select().where(Pinboard.column == column and Pinboard.position > position)
-    for element in elements:
-        element.position-=1
-        element.save()
-    # Close connection
-    database_pinboard.close() 
-    
-# Remove Pinboard elements by id 
-def remove_pinboard_element_by_id(user, column, position, id):
-    # Connect database
-    database_pinboard.connect()
-    #Select elements
-    elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == column, Pinboard.id == id)
-    # Remove elements
-    elements.execute() 
-    # Change postitioning
-    elements = Pinboard.select().where(Pinboard.column == column and Pinboard.position > position)
-    for element in elements:
-        element.position-=1
-        element.save()
-    # Close connection
-    database_pinboard.close()     
+
