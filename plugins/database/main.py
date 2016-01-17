@@ -123,7 +123,7 @@ def add_pinboard_element(user, type, content, cursor):
         element.position+=1
         element.save()
     # Add pinboard element
-    Pinboard.create(user=user, type=type, content=content, column=cursor.column, id=cursor.id, position=cursor.position).save()
+    Pinboard.create(user=user, type=type, content=content, column=cursor.column, position=cursor.position).save()
     # Close connection
     database_pinboard.close()
  
@@ -132,8 +132,8 @@ def get_pinboard_element(user, cursor):
     # Connect database
     database_pinboard.connect() 
     # Select the element
-    if cursor.position and cursor.id:
-        pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position, Pinboard.id == cursor.id)
+    if cursor.position:
+        pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position)
     # Or select the whole column
     else:
         pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.column == cursor.column)
@@ -151,14 +151,9 @@ def change_pinboard_element(pinboard_element, final_position=None, final_column=
     if content and type:
         pinboard_element.type = type
         pinboard_element.content = content
-    
-    # Change the id
-    if id:
-        pinboard_element.id = id
-    
+
     # Change the column
-    if final_column:
-        pinboard_element.column = final_column
+    if final_column: pinboard_element.column = final_column
         
     # Change the position
     if final_position:
@@ -186,8 +181,8 @@ def remove_pinboard_element(user, cursor):
     # Connect database
     database_pinboard.connect()
     # Select the element
-    if cursor.id and cursor.position:
-        elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position, Pinboard.id == cursor.id)
+    if cursor.position:
+        elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == cursor.column, Pinboard.position == cursor.position)
     # Or select the whole column
     else:
         elements = Pinboard.delete().where(Pinboard.user == user, Pinboard.column == cursor.column)
