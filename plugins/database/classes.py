@@ -7,7 +7,7 @@ database = SqliteDatabase(plugin_path + 'database/databases/users.db')
 
 database_texts = SqliteDatabase(plugin_path + 'database/databases/texts.db')
 
-
+database_pinboard = SqliteDatabase(plugin_path + 'database/databases/pinboard.db')
 # User model
 class User(Model):
     # We need username
@@ -39,7 +39,7 @@ class texts(Model):
 
 # Depending of notes
 class Depending(Model):
-    # Get MAIN theme
+    # Get main theme
     main_theme = CharField()
     # Get secondary theme
     second_theme = CharField()
@@ -47,6 +47,23 @@ class Depending(Model):
     class Meta:
         database = database_texts  # Uses 'texts.db'
 
+# Pinboard model
+class Pinboard(Model):
+    # User field
+    user = CharField()
+    # Type field
+    type = CharField()
+    # Content field
+    content = CharField()
+    # Column field
+    column = IntegerField()
+    # id field
+    id = IntegerField()
+    # Position field
+    position = IntegerField()
+    
+    class Meta:
+        database = database # Uses 'pinboard.db'
 
 def create_tables():
     database_texts.connect()
@@ -55,3 +72,7 @@ def create_tables():
     database.connect()
     database.create_table([User])
     database.close()
+    database_pinboard.connect()
+    database_pinboard.create_tables([Pinboard])
+    database_pinboard.close()
+
