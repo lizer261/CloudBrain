@@ -1,6 +1,7 @@
 # Import pewee for database manipulations
 
 # Path to database
+from plugin_manager.plugin_manager import plugin_path
 
 # Hashlib for md5
 import hashlib
