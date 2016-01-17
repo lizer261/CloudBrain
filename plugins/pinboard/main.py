@@ -1,6 +1,6 @@
 from flask import request, redirect
 
-from plugins.database.main import add_pinboard_element, change_pinboard_element, remove_pinboard_element
+from plugins.database.main import add_pinboard_element, get_pinboard_element, change_pinboard_element, remove_pinboard_element
 
 from plugins.database.classes import Pinboard
 
@@ -24,7 +24,7 @@ def init(app):
         database_pinboard.connect()
         
         cursor={column:request.form['column'],position:request.form['position']}        
-        pinboard_element = Pinboard.get(Pinboard.user == 'Andrew', Pinboard.column == cursor.column, Pinboard.position == cursor.position)
+        pinboard_element = get_pinboard_element(user='Andrew', cursor=cursor)
 
         #close the connection
         database_pinboard.close()
