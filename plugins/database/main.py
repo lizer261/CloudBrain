@@ -12,6 +12,8 @@ from plugins.database.classes import *
 database_texts = SqliteDatabase(plugin_path + 'database/databases/texts.db')
 # Users database
 database = SqliteDatabase(plugin_path + 'database/databases/users.db')
+#Pinboard database
+database_pinboard = SqliteDatabase(plugin_path + 'database/databases/pinboard.db')
 # MD5 crypt
 md5 = lambda string: hashlib.md5(string.encode()).hexdigest()
 
@@ -99,12 +101,91 @@ def get_text_by_theme(user, theme):
     return text_of_user
 
 
-#
+# Remove depending
 def remove_depending(main_theme, second_theme):
     " Remove theme depending "
     # Connect database
     database_texts.connect()
-    q = Depending.delete().where(Depending.second_theme == second_theme, Depending.main_theme == main_theme)
-    q.execute()  # remove the rows
+    # Select depending to delete
+    depending = Depending.delete().where(Depending.second_theme == second_theme, Depending.main_theme == main_theme)
+    # Remove the depending
+    depending.execute() 
     # Close connection
     database_texts.close()
+
+# Add Pinboard element
+def add_pinboard_element(user, type, content, column, id, position):
+    # Connect database
+    database_pinboard.connect()
+    # Add pinboard element
+    Pinboard.create(user=user, type=type, content=content, column=column, id=id, position=position).save()
+    # Close connection
+    database_pinboard.close()
+ 
+# Get Pinboard element
+def get_pinboard_element(user, type, content, column, id, position):
+    # Connect database
+    database_pinboard.connect() 
+    # Select the element
+    pinboard_element = Pinboard.select().where(Pinboard.user == user, Pinboard.type == type, Pinboard.content == content, Pinboard.column == column, Pinboard.id == id, Pinboard.position == position)
+    # Close connection
+    database_pinboard.close()
+    # Return element
+    return pinboard_element
+
+# Change Pinboard element content
+def change_pinboard_element_content(pinboard_element, type, content):
+    # Connect database
+    database_pinboard.connect()
+    # Change the type
+    pinboard_element.type = type
+    # Change the content
+    pinboard_element.content = content
+    # Save changes
+    pinboard_element.save()
+    # Close connection
+    database_pinboard.close()
+    
+# Change Pinboard element column
+def change_pinboard_element_column(pinboard_element, final_column):
+    # Connect database
+    database_pinboard.connect()
+    # Change the column
+    pinboard_element.column = final_column
+    # Save changes
+    pinboard_element.save()
+    # Close connection
+    database_pinboard.close()
+
+# Change Pinboard element id
+def change_pinboard_element_column(pinboard_element, id):
+    # Connect database
+    database_pinboard.connect()
+    # Change the id
+    pinboard_element.id = id
+    # Save changes
+    pinboard_element.save()
+    # Close connection
+    database_pinboard.close()
+    
+# Change Pinboard element position
+def change_pinboard_element_position(pinboard_element, final_position):
+    # Connect database
+    database_pinboard.connect()
+    # Change the position
+    pinboard_element.position = final_position
+    # Save changes
+    pinboard_element.save()
+    # Close connection
+    database_pinboard.close()
+
+# Remove Pinboard element
+def remove_pinboard_element(user, type, content, column, id, position):
+    # Connect database
+    database_pinboard.connect()
+    #Select the element
+    element = Pinboard.delete().where(Pinboard.user == user, Pinboard.type == type, Pinboard.content == content, Pinboard.column == column, Pinboard.id == id, Pinboard.position == position)
+    # Remove the element
+    element.execute() 
+    # Close connection
+    database_pinboard.close()   
